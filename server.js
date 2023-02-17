@@ -1,8 +1,5 @@
 require('dotenv').config()
 
-var jsforce = require('jsforce');
-var conn = new jsforce.Connection();
-
 const express = require('express')
 const app = express()
 const mongoose = require('mongoose')
@@ -17,7 +14,13 @@ db.once('open', () => console.log('Connected to Database'))
 
 app.use(express.json())
 
-const subscribersRouter = require('./routes/subscribers')
-app.use('/subscribers', subscribersRouter)
+const subscribersRouter = require('./routes/subscribers');
+const salesforceAuthRouter = require('./routes/salesforceAuth');
+const vipAuthRouter = require('./routes/vipAuth');
+
+
+app.use('/subscribers', subscribersRouter);
+app.use('/salesforceAuth', salesforceAuthRouter);
+app.use('/salesforceAuth', vipAuthRouter);
 
 app.listen(3000, () => console.log('Server Started'))
