@@ -3,6 +3,8 @@ const fs = require('fs');
 const express = require('express')
 const vehicleEvent= require('../models/vehicleEvents')
 const router = express.Router()
+const salesforceAuth = require('./salesforceAuth');
+const vehicleEvents = require('../models/vehicleEvents');
 
 var user =  'welisa-vip-uat-app';
 var pass = 'UBv2chMN7y-sNp2Ko_ZV';
@@ -35,26 +37,18 @@ https.request(options, (res) => {
     });
     res.on('end', () => {
       const parsedData = JSON.parse(data);
-
-      // console.log(parsedData.vehicleEventList.vehicleEvents);
-
-      // var vehicleEvents = JSON.parse(parsedData.vehicleEventList.vehicleEvents);
-      // console.log(vehicleEvents);
-      // const convertedVehicleEvents;
-      console.log(parsedData.vehicleEvents);
-
       var vehicleEvents =parsedData.vehicleEvents;
-      console.log(vehicleEvents);
+
+      var parseBackToJSON = JSON.stringify(vehicleEvents);
+
+      salesforceAuth.upsertAllVehicleEvents(vehicleEvents);
 
       for (let index = 0; index < vehicleEvents.length; index++) {
-        // const element = vehicleEvents[index].commissionNumber;
-        console.log(vehicleEvents[index])
         const vehicleEventHier = new vehicleEvent({
           commissionNumber: vehicleEvents[index].commissionNumber
         })
         try {
-          const newEvent =  vehicleEventHier.save();
-          console.log('succes');
+          // const newEvent =  vehicleEventHier.save();
         } catch (error) {
           console.log('error')
         }
